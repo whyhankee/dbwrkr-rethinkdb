@@ -1,4 +1,4 @@
-# DBWrkr MongoDB storage engine
+# DBWrkr RethinkDB storage engine
 
 This is the RethinkDB storage engine for DBWrkr
 
