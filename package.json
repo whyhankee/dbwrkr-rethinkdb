@@ -1,0 +1,31 @@
+{
+  "name": "dbwrkr-rethinkdb",
+  "version": "0.0.1",
+  "description": "DBWrkr storage engine for RethinDb",
+  "main": "dbwrkr-rethinkdb.js",
+  "scripts": {
+    "tdd": "nodemon -w ./ -w ../dbwrkr ./test/dbwrkr-rethinkdb-tests.js",
+    "test": "node ./test/dbwrkr-rethinkdb-tests.js && eslint ."
+  },
+  "keywords": [
+    "dbwrkr",
+    "wrkr",
+    "rethinkdb"
+  ],
+  "dependencies": {
+    "dbwrkr": "0.0.2",
+    "debug": "2.2.0",
+    "flw": "0.0.14",
+    "rethinkdb": "2.3.3"
+  },
+  "devDependencies": {
+    "eslint": "<3.0.0",
+    "nodemon": "1.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:whyhankee/dbwrkr-rethinkdb.git"
+  },
+  "author": "Paul Wijhenke <paul@paulsplace.nl>",
+  "license": "MIT"
+}
