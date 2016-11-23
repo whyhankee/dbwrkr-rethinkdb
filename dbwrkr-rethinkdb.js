@@ -169,12 +169,29 @@ DbWrkrRethinkDB.prototype.fetchNext = function fetchNext(queue, done) {
 
 
 DbWrkrRethinkDB.prototype.find = function find(criteria, done) {
+  var self = this;
   debug('finding ', criteria);
-  this.tQitems.filter(criteria).run(this.db, function (err, cursor) {
-    if (err) return done(err);
 
-    return cursor.toArray(done);
-  });
+  if (criteria.id) return searchById();
+  return searchByFilter();
+
+  function searchById() {
+    var searchIds = Array.isArray(criteria.id) ? criteria.id : [criteria.id];
+    console.log('*** searchIds', searchIds);
+
+    self.tQitems.getAll(r.args(searchIds)).run(self.db, function (err, cursor) {
+      console.log('***** err, cursor', err);
+      if (err) return done(err);
+      return cursor.toArray(done);
+    });
+  }
+
+  function searchByFilter() {
+    self.tQitems.filter(criteria).run(self.db, function (err, cursor) {
+      if (err) return done(err);
+      return cursor.toArray(done);
+    });
+  }
 };
 
 
