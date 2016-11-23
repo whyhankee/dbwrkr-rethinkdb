@@ -14,8 +14,8 @@
   ],
   "dependencies": {
     "dbwrkr": "0.0.2",
-    "debug": "2.2.0",
-    "flw": "0.0.14",
+    "debug": "2.3.3",
+    "flw": "0.0.16",
     "rethinkdb": "2.3.3"
   },
   "devDependencies": {
