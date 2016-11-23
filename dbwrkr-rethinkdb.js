@@ -177,10 +177,7 @@ DbWrkrRethinkDB.prototype.find = function find(criteria, done) {
 
   function searchById() {
     var searchIds = Array.isArray(criteria.id) ? criteria.id : [criteria.id];
-    console.log('*** searchIds', searchIds);
-
     self.tQitems.getAll(r.args(searchIds)).run(self.db, function (err, cursor) {
-      console.log('***** err, cursor', err);
       if (err) return done(err);
       return cursor.toArray(done);
     });
