@@ -148,14 +148,6 @@ DbWrkrRethinkDB.prototype.fetchNext = function fetchNext(queue, done) {
   .replace(r.row.without('when').merge({done: new Date()}), {
     returnChanges: true,
   });
-  // .replace(r.row.without('when'), {
-  //   returnChanges: true,
-  // });
-  // .replace(function (row) {
-  //   delete row.when;
-  //   row.done = new Date();
-  //   return row;
-  // }, {
   return query.run(this.db, function (err, result) {
     if (err) return done(err);
     if (result.replaced ==! 1) return done(null, undefined);
