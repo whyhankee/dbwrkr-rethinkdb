@@ -1,6 +1,6 @@
 {
   "name": "dbwrkr-rethinkdb",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "DBWrkr storage engine for RethinDb",
   "main": "dbwrkr-rethinkdb.js",
   "scripts": {
