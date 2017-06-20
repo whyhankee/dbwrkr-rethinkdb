@@ -1,16 +1,16 @@
 /* eslint no-console: 0 */
-var DBWrkr = require('dbwrkr').DBWrkr;
-var DBWrkrRethink = require('../dbwrkr-rethinkdb');
-var flw = require('flw');
+const DBWrkr = require('dbwrkr').DBWrkr;
+const DBWrkrRethink = require('../dbwrkr-rethinkdb');
+const flw = require('flw');
 
 
 // Setup DBWorker
 //
 //
-var storage = new DBWrkrRethink({
+const storage = new DBWrkrRethink({
   dbName: 'dbwrkr_example'
 });
-var wrkr = new DBWrkr({
+const wrkr = new DBWrkr({
   storage: storage,
 });
 
@@ -19,7 +19,7 @@ wrkr.on('error', function (error) {
 });
 
 wrkr.on('event', function (event, done) {
-  var delayMs = new Date() - event.created;
+  const delayMs = new Date() - event.created;
   console.log(
     'received event', event.payload.counter, 'delay: ', delayMs,
     event.name, 'from queue', event.queue
@@ -55,8 +55,8 @@ function subscribeEvent(c, cb) {
 
 function sendEvents(c, cb) {
   console.log('sendEvents');
-  var intervalMs = 50;
-  var counter = 0;
+  const intervalMs = 50;
+  let counter = 0;
 
   setTimeout(sendEvent, intervalMs);
   return cb();

@@ -1,7 +1,7 @@
-var assert = require('assert');
-var debug = require('debug')('dbwrkr:rethinkdb');
-var flw = require('flw');
-var r = require('rethinkdb');
+const assert = require('assert');
+const debug = require('debug')('dbwrkr:rethinkdb');
+const flw = require('flw');
+const r = require('rethinkdb');
 
 // Document schema
 //
@@ -44,7 +44,7 @@ function DbWrkrRethinkDB(opt) {
 
 
 DbWrkrRethinkDB.prototype.connect = function connect(done) {
-  var self = this;
+  const self = this;
   debug('connecting to Rethinkdb', this.rOptions);
 
   r.connect(this.rOptions, function (err, conn) {
@@ -73,7 +73,7 @@ DbWrkrRethinkDB.prototype.disconnect = function disconnect(done) {
 DbWrkrRethinkDB.prototype.subscribe = function subscribe(eventName, queueName, done) {
   debug('subscribe ', {event: eventName, queue: queueName});
 
-  var query = this.tSubscriptions
+  const query = this.tSubscriptions
     .get(eventName)
     .replace({
       id: eventName,
@@ -94,7 +94,7 @@ DbWrkrRethinkDB.prototype.subscribe = function subscribe(eventName, queueName, d
 DbWrkrRethinkDB.prototype.unsubscribe = function unsubscribe(eventName, queueName, done) {
   debug('unsubscribe ', {event: eventName, queue: queueName});
 
-  var query = this.tSubscriptions
+  const query = this.tSubscriptions
     .get(eventName)
     .replace({
       id: eventName,
@@ -108,7 +108,7 @@ DbWrkrRethinkDB.prototype.unsubscribe = function unsubscribe(eventName, queueNam
 
 
 DbWrkrRethinkDB.prototype.subscriptions = function subscriptions(eventName, done) {
-  var query = this.tSubscriptions.get(eventName);
+  const query = this.tSubscriptions.get(eventName);
 
   return query.run(this.db, function (err, event) {
     if (err) return done(err);
@@ -120,17 +120,17 @@ DbWrkrRethinkDB.prototype.subscriptions = function subscriptions(eventName, done
 
 
 DbWrkrRethinkDB.prototype.publish = function publish(events, done) {
-  var publishEvents = Array.isArray(events) ? events : [events];
+  const publishEvents = Array.isArray(events) ? events : [events];
 
   debug('storing ', publishEvents);
-  this.tQitems.insert(publishEvents).run(this.db, function(err, results) {
+  this.tQitems.insert(publishEvents).run(this.db, function (err, results) {
     if (err) return done(err);
 
     if (publishEvents.length !== results.inserted) {
       return done(new Error('insertErrorNotEnoughEvents'));
     }
 
-    var createdIds = results.generated_keys;
+    const createdIds = results.generated_keys;
     return done(null, createdIds);
   });
 };
@@ -140,19 +140,19 @@ DbWrkrRethinkDB.prototype.fetchNext = function fetchNext(queue, done) {
   debug('fetchNext start', queue);
 
   // Get nextItem based on when, filter on the queue we are receiving
-  var min = [queue, r.minval];
-  var max = [queue, r.now()];
-  var query = this.tQitems.orderBy({index: 'idxQueueWhen'})
-  .between(min, max, {index: 'idxQueueWhen'})
-  .limit(1)
-  .replace(r.row.without('when').merge({done: new Date()}), {
-    returnChanges: true,
-  });
+  const min = [queue, r.minval];
+  const max = [queue, r.now()];
+  const query = this.tQitems.orderBy({index: 'idxQueueWhen'})
+    .between(min, max, {index: 'idxQueueWhen'})
+    .limit(1)
+    .replace(r.row.without('when').merge({done: new Date()}), {
+      returnChanges: true,
+    });
   return query.run(this.db, function (err, result) {
     if (err) return done(err);
     if (result.replaced ==! 1) return done(null, undefined);
 
-    var newDoc = result.changes[0].new_val;
+    const newDoc = result.changes[0].new_val;
     debug('fetchNext', newDoc);
 
     return done(null, newDoc);
@@ -161,14 +161,14 @@ DbWrkrRethinkDB.prototype.fetchNext = function fetchNext(queue, done) {
 
 
 DbWrkrRethinkDB.prototype.find = function find(criteria, done) {
-  var self = this;
+  const self = this;
   debug('finding ', criteria);
 
   if (criteria.id) return searchById();
   return searchByFilter();
 
   function searchById() {
-    var searchIds = Array.isArray(criteria.id) ? criteria.id : [criteria.id];
+    const searchIds = Array.isArray(criteria.id) ? criteria.id : [criteria.id];
     self.tQitems.getAll(r.args(searchIds)).run(self.db, function (err, cursor) {
       if (err) return done(err);
       return cursor.toArray(done);
