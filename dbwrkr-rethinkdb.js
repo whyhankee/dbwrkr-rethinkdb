@@ -1,3 +1,4 @@
+'use strict';
 const assert = require('assert');
 const debug = require('debug')('dbwrkr:rethinkdb');
 const flw = require('flw');
