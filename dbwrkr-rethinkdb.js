@@ -23,6 +23,9 @@ const r = require('rethinkdb');
 
 
 function DbWrkrRethinkDB(opt) {
+  if (!(this instanceof DbWrkrRethinkDB)) {
+    return new DbWrkrRethinkDB(opt);
+  }
   debug('DbWrkrRethinkDB - opt', opt);
 
   this.rOptions = {
@@ -153,9 +156,8 @@ DbWrkrRethinkDB.prototype.fetchNext = function fetchNext(queue, done) {
     if (err) return done(err);
     if (result.replaced ==! 1) return done(null, undefined);
 
-    const newDoc = result.changes[0].new_val;
+    const newDoc = fieldMapper(result.changes[0].new_val);
     debug('fetchNext', newDoc);
-
     return done(null, newDoc);
   });
 };
@@ -177,7 +179,11 @@ DbWrkrRethinkDB.prototype.find = function find(criteria, done) {
   }
 
   function searchByFilter() {
-    self.tQitems.filter(criteria).run(self.db, function (err, cursor) {
+    const minDate = new Date(1900, 0, 1);
+    const query = self.tQitems
+      .filter(r.row('when').gt(minDate))
+      .filter(criteria);
+    return query.run(self.db, (err, cursor) => {
       if (err) return done(err);
       return cursor.toArray(done);
     });
@@ -259,5 +265,24 @@ function setupTables(db, dbName, done) {
   }
 }
 
+
+/**
+ * Map (all) (missing) fields to the correct values
+ * @param {qitem} r the record to fieldmap
+ */
+function fieldMapper(r) {
+  return {
+    id: r.id,
+    name: r.name,
+    tid: r.tid,
+    parent: r.parent,
+    payload: r.payload,
+    queue: r.queue,
+    created: r.created,
+    when: r.when || undefined,
+    done: r.done || undefined,
+    retryCount: r.retryCount || 0,
+  };
+}
 
 module.exports = DbWrkrRethinkDB;
