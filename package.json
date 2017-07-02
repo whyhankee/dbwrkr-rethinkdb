@@ -18,7 +18,7 @@
     "rethinkdb": "2.3.3"
   },
   "devDependencies": {
-    "dbwrkr": "0.0.4",
+    "dbwrkr": "whyhankee/dbwrkr",
     "eslint": "4.1.1",
     "nodemon": "1.11.0"
   },
