@@ -1,9 +1,9 @@
 /* eslint no-console: 0 */
 const DBWrkrStorage = require('../dbwrkr-rethinkdb');
-const dbWrkrTests = require('dbwrkr').tests;
+const tests = require('dbwrkr').tests;
 
 
-dbWrkrTests({
+tests({
   storage: DBWrkrStorage({
     dbName: 'dbwrkr_tests'
   })
