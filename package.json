@@ -4,8 +4,8 @@
   "description": "DBWrkr storage engine for RethinDb",
   "main": "dbwrkr-rethinkdb.js",
   "scripts": {
-    "tdd": "nodemon -w ./ -w ../dbwrkr ./test/dbwrkr-rethinkdb-tests.js",
-    "test": "node ./test/dbwrkr-rethinkdb-tests.js && eslint ."
+    "test": "node ./test/dbwrkr-rethinkdb-tests.js && eslint .",
+    "tdd": "nodemon -w ./ -w ../dbwrkr ./test/dbwrkr-rethinkdb-tests.js"
   },
   "keywords": [
     "dbwrkr",
