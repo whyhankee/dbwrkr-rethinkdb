@@ -135,6 +135,7 @@ DbWrkrRethinkDB.prototype.publish = function publish(events, done) {
     }
 
     const createdIds = results.generated_keys;
+    debug('stored ', publishEvents.length, createdIds);
     return done(null, createdIds);
   });
 };
@@ -144,17 +145,20 @@ DbWrkrRethinkDB.prototype.fetchNext = function fetchNext(queue, done) {
   debug('fetchNext start', queue);
 
   // Get nextItem based on when, filter on the queue we are receiving
-  const min = [queue, r.minval];
-  const max = [queue, r.now()];
-  const query = this.tQitems.orderBy({index: 'idxQueueWhen'})
-    .between(min, max, {index: 'idxQueueWhen'})
+  const min = [queue, r.minval, r.minval];
+  const max = [queue, r.now(), r.now()];
+  const query = this.tQitems.between(min, max, {index: 'idxQueueCreatedWhen'})
+    .orderBy({index: 'idxQueueCreatedWhen'})
     .limit(1)
     .replace(r.row.without('when').merge({done: new Date()}), {
       returnChanges: true,
     });
   return query.run(this.db, function (err, result) {
     if (err) return done(err);
-    if (result.replaced ==! 1) return done(null, undefined);
+    if (result.replaced ==! 1) {
+      debug('fetchNext', '<no items>');
+      return done(null, undefined);
+    }
 
     const newDoc = fieldMapper(result.changes[0].new_val);
     debug('fetchNext', newDoc);
@@ -252,14 +256,14 @@ function setupTables(db, dbName, done) {
       .run(db, c._store('indexNames', cb));
   }
   function createIndexQueueWhen(c, cb) {
-    if (c.indexNames.indexOf('idxQueueWhen') !== -1) return cb();
+    if (c.indexNames.indexOf('idxQueueCreatedWhen') !== -1) return cb();
 
     return r.db(dbName).table('wrkr_qitems')
-      .indexCreate('idxQueueWhen', [r.row('queue'), r.row('when')])
+      .indexCreate('idxQueueCreatedWhen', [r.row('queue'), r.row('created'), r.row('when')])
       .run(db, cb);
   }
 
-  // wait for indexes to be ready
+  // Wait for indexes to be ready
   function waitForIndexes(c, cb) {
     return r.table('wrkr_qitems').indexWait().run(db, cb);
   }
