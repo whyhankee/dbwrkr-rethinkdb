@@ -1,6 +1,6 @@
 {
   "name": "dbwrkr-rethinkdb",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "DBWrkr storage engine for RethinDb",
   "main": "dbwrkr-rethinkdb.js",
   "scripts": {
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "dbwrkr": "whyhankee/dbwrkr",
-    "eslint": "4.1.1",
+    "eslint": "4.4.0",
     "nodemon": "1.11.0"
   },
   "repository": {

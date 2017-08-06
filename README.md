@@ -10,6 +10,9 @@ DBWrkr pub-sub system <https://github.com/whyhankee/dbwrkr>
 
 ## Changelog
 
+v0.0.4
+* return queue-items by order of creation
+
 v0.0.3
 * make dbwrkr a devDependency
 
